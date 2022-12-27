@@ -1,97 +1,138 @@
-import logo from './logo.svg';
 import './App.css';
-import {User} from './User.js';
-import {useState} from 'react';
-import {Item} from './Item'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useState } from 'react';
+import { faArrowRight, faStar, faMoon, faSun} from '@fortawesome/free-solid-svg-icons';
+import { Review } from './Review';
 
 function App() {
   
-  const [toDoList, setToDoList] = useState([]);
-  const [newTask, setNewTask] = useState('');
-  const [newTaskState, setNewTaskState] = useState(1);
-  const [taskId, generateTaskId] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [review, setReview] = useState('');
+  const [rating, setRating] = useState(0);
+  const [submitter, setSubmitter] = useState('Unknown');
+  const [reviewId, setReviewId] = useState(0);
+  const [averageReview, setAvgReview] = useState(0);
+  const [like, setLikes] = useState(0);
+  const [dislike, setDislikes] = useState(0);
+  const [darkModeOn, setDarkMode] = useState(false);
 
-  const taskStates = ['New', 'In Progress', 'Done'];
-
-  const getNewTask = (event) => {
-    setNewTask(event.target.value);
+  const getReviewContent = (event) => {
+    setReview(event.target.value);
+    // console.log('Review: '+review);
   }
 
-  const getStateOfNewTask = (event) => {
-    setNewTaskState(event.target.value);
+  const getRating = (event) => {
+    setRating(event.target.value);
+    // console.log('Rating: '+rating);
   }
 
-  const addTaskToList = () => {
-    generateTaskId(taskId + 1);
-    const state = taskStates[parseInt(newTaskState)-1];
+  const getSubmitter = (event) => {
+    setSubmitter(event.target.value);
+    // console.log('By: '+submitter);
+  }
 
-    const newItem = {
-      newTask: newTask,
-      state: state,
-      taskId: taskId,
-      complete: false
+  const addReview = () => {
+    setReviewId(reviewId + 1);
+    const obj = {
+      submitter: submitter,
+      submissionDate: `${new Date().toDateString()} @ ${new Date().toLocaleTimeString()}`,
+      dateFormat: generateReviewDate(new Date()),
+      reviewContent: review,
+      likes: 0,
+      dislikes: 0,
+      rating: parseFloat(rating),
+      reviewId: reviewId
     }
-
-    const newList = [...toDoList, newItem];
-    setToDoList(newList);
-    console.log(newList);
+    setAvgReview(((averageReview*reviews.length) + obj.rating) / (reviews.length+1));
+    setReviews([...reviews, obj]);
   }
 
-  const deleteTask = (taskId) => {
-    const newList = toDoList.filter((task) => {
-      return task.taskId !== taskId;
+  const deleteReview = (reviewId) => {
+    const newReview = reviews.filter((r) => {
+      return reviewId !== r.reviewId
+    });
+    setReviews(newReview);
+  }
+
+  const addLike = (reviewId) => {
+    const item = reviews.filter((r) => {
+      return reviewId === r.reviewId;
     })
-    setToDoList(newList);
+
+    item[0].likes++;
+    setLikes(like + 1);
+    setReviews(reviews);
   }
 
-  const completeTask = (taskId) => {
+  const addDislike = (reviewId) => {
+    const item = reviews.filter((r) => {
+      return reviewId === r.reviewId;
+    })
 
-    setToDoList(toDoList.map((task) => {
-      if (task.taskId === taskId){
-        return {...task, complete: !task.complete};
-      } 
-      return task;
-    }))
+    item[0].dislikes++;
+    setDislikes(dislike + 1);
+    setReviews(reviews);
+  }
 
-
+  const changeMode = () => {
+    setDarkMode(!darkModeOn);
   }
 
   return (
     <div className="App">
 
-      <div className='addTask'>
-        <input type="text" required placeholder='Task Name' onChange={getNewTask}/>
-        <select onChange={getStateOfNewTask}>
-          <option value={1}>New</option>
-          <option value={2}>In Progress</option>
-          <option value={3}>Done</option>
-        </select>
-        <button onClick={addTaskToList}>Add Task</button>
+      <h2>Add Review</h2>
+      <button onClick={changeMode}>
+        <FontAwesomeIcon icon={darkModeOn ? faSun : faMoon}/>
+      </button>
+      <div>
+        <p>Average Review: {averageReview.toFixed(2)}</p>
+      
+        <div>
+          <button style={{background: 'transparent', border: 'transparent'}} ><FontAwesomeIcon icon={faStar} style={{color: 'gold', fontSize: '25px'}}/></button>
+          <button style={{background: 'transparent', border: 'transparent'}} ><FontAwesomeIcon icon={faStar} style={{color: 'gold', fontSize: '25px'}}/></button>
+          <button style={{background: 'transparent', border: 'transparent'}} ><FontAwesomeIcon icon={faStar} style={{color: 'gold', fontSize: '25px'}}/></button>
+          <button style={{background: 'transparent', border: 'transparent'}} ><FontAwesomeIcon icon={faStar} style={{color: 'gold', fontSize: '25px'}}/></button>
+          <button style={{background: 'transparent', border: 'transparent'}} ><FontAwesomeIcon icon={faStar} style={{color: 'gold', fontSize: '25px'}}/></button>
+        </div>
+
+      
       </div>
 
-      <div className='toDoList'>
-        
-        {
+      <div>
+        <input type='text' placeholder='Review' onChange={getReviewContent}/>
+        <input type='number' max={5} min={1} step={0.5} onChange={getRating}/>
+        <input type='text' placeholder='Name' onChange={getSubmitter}/>
+        <button onClick={addReview}><FontAwesomeIcon icon={faArrowRight} style={{color: 'green'}}/></button>
+      </div>
 
-          toDoList.map((task) => {
-            return (
-              <Item value={task} deleteTask={deleteTask} completeTask={completeTask} />
-            )
+      <div className='review-list'>
+        {
+          reviews.map((r, value) => {
+            return <Review mode={darkModeOn} dislike={addDislike} addLike={addLike} deleteReview={deleteReview} review={r} key={value}/>
           })
-          
         }
       </div>
-      
+
     </div>
   );
 }
 
+/**
+ * Generate formatted date for comment
+ * @param {Date} date to be formatted
+ * @returns returns comment
+ */
+function generateReviewDate(date) {
+  let year = date.getFullYear();
+
+  let month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : '0' + month;
+
+  let day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+  console.log(month + '/' + day + '/' + year);
+  return month + '/' + day + '/' + year;
+}
+
 export default App;
-
-/*
-
-item:
-  name: anything
-  state: ToDo, Done, InProgress
-
-*/
