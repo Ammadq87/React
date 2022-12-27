@@ -1,97 +1,71 @@
-import logo from './logo.svg';
 import './App.css';
-import {User} from './User.js';
-import {useState} from 'react';
-import {Item} from './Item'
+import {useState, useEffect} from 'react';
+import { Text } from './Text';
+import Axios from 'axios';
+
+
+/*
+
+! NOTES: Component Lifecylce & useEffect Hooks
+
+- 3 stages:
+  - mounting stage (appearing onscreen)
+  - updating stage
+  - unmounting stage (disappears)
+
+useEffect Hook:
+- control what is happening depends on which stage the component lifecycle is
+- called when component is being updated
+- Example Use:
+  - make api call as soon as component appears
+
+*/
+
 
 function App() {
-  
-  const [toDoList, setToDoList] = useState([]);
-  const [newTask, setNewTask] = useState('');
-  const [newTaskState, setNewTaskState] = useState(1);
-  const [taskId, generateTaskId] = useState(0);
 
-  const taskStates = ['New', 'In Progress', 'Done'];
+  const [catFact, setCatFact] = useState('');
+  const [nameInput, setNameInput] = useState('');
+  const [predictedAge, setPredictedAge] = useState(0);
 
-  const getNewTask = (event) => {
-    setNewTask(event.target.value);
-  }
-
-  const getStateOfNewTask = (event) => {
-    setNewTaskState(event.target.value);
-  }
-
-  const addTaskToList = () => {
-    generateTaskId(taskId + 1);
-    const state = taskStates[parseInt(newTaskState)-1];
-
-    const newItem = {
-      newTask: newTask,
-      state: state,
-      taskId: taskId,
-      complete: false
-    }
-
-    const newList = [...toDoList, newItem];
-    setToDoList(newList);
-    console.log(newList);
-  }
-
-  const deleteTask = (taskId) => {
-    const newList = toDoList.filter((task) => {
-      return task.taskId !== taskId;
+  const fetchCatFact = () => {
+    Axios.get("https://catfact.ninja/fact").then((res) => {
+      setCatFact(res.data.fact);
     })
-    setToDoList(newList);
   }
 
-  const completeTask = (taskId) => {
+  useEffect(() => {
+    console.log('Api Call:');
+    fetchCatFact();
+    return () => {
+      console.log('Api Call Finished');
+    }
+  }, []);
 
-    setToDoList(toDoList.map((task) => {
-      if (task.taskId === taskId){
-        return {...task, complete: !task.complete};
-      } 
-      return task;
-    }))
+  const [showText, toggleText] = useState(false);
+  const displayText = () => {
+    toggleText(!showText);
+  }
 
 
+  const getAge = () => {
+    Axios.get(`https://api.agify.io/?name=${nameInput}`).then((res) => {
+      setPredictedAge(res.data.age);
+    })
   }
 
   return (
     <div className="App">
+      <button onClick={displayText}>Show Text</button>
+      {showText && <Text/>}
+      <button onClick={fetchCatFact}>Generate Cat Fact</button>
+      <p>{catFact}</p>
 
-      <div className='addTask'>
-        <input type="text" required placeholder='Task Name' onChange={getNewTask}/>
-        <select onChange={getStateOfNewTask}>
-          <option value={1}>New</option>
-          <option value={2}>In Progress</option>
-          <option value={3}>Done</option>
-        </select>
-        <button onClick={addTaskToList}>Add Task</button>
-      </div>
-
-      <div className='toDoList'>
-        
-        {
-
-          toDoList.map((task) => {
-            return (
-              <Item value={task} deleteTask={deleteTask} completeTask={completeTask} />
-            )
-          })
-          
-        }
-      </div>
-      
+      <button onClick={getAge}>Predict Age</button>
+      <input type='text' onChange={(event) => {setNameInput(event.target.value)}}/>
+      <p>{predictedAge}</p>
     </div>
   );
 }
 
 export default App;
-
-/*
-
-item:
-  name: anything
-  state: ToDo, Done, InProgress
-
-*/
