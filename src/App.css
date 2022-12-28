@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  height: 99.5vh;
 }
 
 .App-logo {
@@ -37,6 +38,111 @@
   }
 }
 
-h1 {
-  color: red;
+.chatWindow {
+  height: 85vh;
+  overflow-y: scroll;
+  width: 52%;
+  margin: auto;
+  margin-top: 5px;
+}
+
+.chatWindow > .intro-title > #title-header{
+  display: flexbox;
+  line-height: 0.5em;
+}
+
+.chatWindow > .intro-title > #icon {
+  background-color: rgb(124, 124, 124);
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  left: 1.5%;
+}
+
+.chatWindow > .intro-title > #title-header > #title {
+  color: white;
+  font-size: 32px;
+  font-weight: 800;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: left;
+  margin-left: 20px;
+
+}
+
+.chatWindow > .intro-title > #title-header > #subMsg {
+  color: lightgray  ;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: left;
+  margin-left: 20px;
+  margin: 20px 5px 5px 20px;
+}
+
+.chatWindow::-webkit-scrollbar {
+  background-color: rgb(54,57,62);
+  width: 7px;
+}
+
+.chatWindow::-webkit-scrollbar-thumb {
+  background-color: rgb(40,43,48);
+  border-radius: 5px;
+}
+
+.input-content {
+  display: flex;
+  margin: auto;
+  width: 50%;
+  height: 9vh;
+}
+
+.avatarSwitch {
+  height: 45px;
+  width: 5%;    
+  background-color: darkgrey;
+  border-radius: 5px;
+
+}
+
+.avatarSwitch > button {
+  border-radius: 5px 0px 0px 5px;
+  width: 100%;
+}
+
+.messageInput {
+  height: 45px;
+  width: 95%;
+  background-color: darkgrey;
+  border-radius: 0px 5px 5px 0px;
+}
+
+.messageInput > input {
+  width: 87%;
+  height: 35px;
+  font-size: 15px;
+  background-color: darkgray;
+  outline: transparent;
+  border: transparent;
+  color: rgb(49, 49, 49);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-right: 15px;
+  
+}
+
+button {
+  width: 45px;
+  height: 100%;
+  font-size: 18px;
+  border: transparent;
+  background-color: darkgrey;
+}
+
+button:hover{
+  cursor: pointer;
+  color: white;
 }

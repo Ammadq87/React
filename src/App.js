@@ -1,97 +1,100 @@
-import logo from './logo.svg';
 import './App.css';
-import {User} from './User.js';
-import {useState} from 'react';
-import {Item} from './Item'
+import {UserModel} from './Models/UserModel';
+import { Message } from './Components/Message';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHashtag, faUserLarge, faFaceSmileBeam, faCircleChevronRight} from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
+import { Navbar } from './Components/Navbar';
+import {SwitchUser} from './Components/SwitchUser'
+
+const currentUsers = [new UserModel('millibyte','red'), new UserModel('OG original tamil', 'green'), new UserModel('short son-in-law', 'blue'), new UserModel('Stochastic Processes', 'indigo'), new UserModel('TheTamilThatActuallyKnowsTamil', 'yellow'), new UserModel('transgenderTamil', 'violet'), new UserModel('will have sex for pc', 'lime')];
+
 
 function App() {
-  
-  const [toDoList, setToDoList] = useState([]);
-  const [newTask, setNewTask] = useState('');
-  const [newTaskState, setNewTaskState] = useState(1);
-  const [taskId, generateTaskId] = useState(0);
 
-  const taskStates = ['New', 'In Progress', 'Done'];
+  const [message, setMessage] = useState('');
+  const [messageList, setMessageList] = useState([]);
+  const [isPrevSender, setPrevSender] = useState(false);
+  const [currentUser, setCurrentUser] = useState(currentUsers[0]);
+  const [showOptions, setShowOptions] = useState(false);
 
-  const getNewTask = (event) => {
-    setNewTask(event.target.value);
+  const getMessage = (event) => {
+    setMessage(event.target.value);
   }
 
-  const getStateOfNewTask = (event) => {
-    setNewTaskState(event.target.value);
-  }
-
-  const addTaskToList = () => {
-    generateTaskId(taskId + 1);
-    const state = taskStates[parseInt(newTaskState)-1];
-
-    const newItem = {
-      newTask: newTask,
-      state: state,
-      taskId: taskId,
-      complete: false
+  const addToMessageList = () => {
+    if (message.trim().length > 0){
+      setMessageList([...messageList, createMessageObj(message, messageList, currentUser)]);
+      console.log(messageList);
     }
-
-    const newList = [...toDoList, newItem];
-    setToDoList(newList);
-    console.log(newList);
+    let objDiv = document.getElementById('chatWindow');
+    objDiv.scrollTop = objDiv.scrollHeight;
   }
 
-  const deleteTask = (taskId) => {
-    const newList = toDoList.filter((task) => {
-      return task.taskId !== taskId;
-    })
-    setToDoList(newList);
+  const showSwitchUserOption = () => {
+    setShowOptions(!showOptions);
   }
 
-  const completeTask = (taskId) => {
-
-    setToDoList(toDoList.map((task) => {
-      if (task.taskId === taskId){
-        return {...task, complete: !task.complete};
-      } 
-      return task;
-    }))
-
-
+  const getSelectedUser = (user) => {
+    setCurrentUser(user);
   }
 
   return (
     <div className="App">
+        <Navbar/>
 
-      <div className='addTask'>
-        <input type="text" required placeholder='Task Name' onChange={getNewTask}/>
-        <select onChange={getStateOfNewTask}>
-          <option value={1}>New</option>
-          <option value={2}>In Progress</option>
-          <option value={3}>Done</option>
-        </select>
-        <button onClick={addTaskToList}>Add Task</button>
-      </div>
+      <div className='chatWindow' id='chatWindow'>
+        <div className='intro-title'>
+          <p id='icon'><FontAwesomeIcon id="hashtag" style={{fontSize: '30px'}} icon={faHashtag}/></p>
+          <div id='title-header'>
+            <p id='title'>Welcome to the #channel</p>
+            <p id='subMsg'>This is the start of the #channel</p>          
+          </div>
+        </div>
 
-      <div className='toDoList'>
-        
-        {
 
-          toDoList.map((task) => {
-            return (
-              <Item value={task} deleteTask={deleteTask} completeTask={completeTask} />
-            )
-          })
-          
-        }
-      </div>
       
+        {messageList.map((msg) => {
+          return <Message userInfo={currentUser} isPrevSender={isPrevSender} message={msg}/>
+        })}
+      
+      </div>
+      <div className='input-content'>
+            <div className='avatarSwitch'>
+                <button onClick={showSwitchUserOption}><FontAwesomeIcon style={{color: currentUser.color}} icon={faUserLarge}/></button>
+                {
+                  showOptions && 
+                  <SwitchUser setShowOptions={showSwitchUserOption} users={currentUsers} value={getSelectedUser}/>
+                }
+            </div>
+            <div className='messageInput'>
+                <input onChange={getMessage} type='text' placeholder='Message #channel' className='input'/>
+                <button  className='emoji-Btn'><FontAwesomeIcon icon={faFaceSmileBeam}/></button>
+                <button onClick={addToMessageList} className='send-btn'><FontAwesomeIcon icon={faCircleChevronRight}/></button>
+            </div>
+        
+        </div>
     </div>
   );
 }
 
+function createMessageObj (msg, messageList, currentUser) {
+
+  const members = ['millibyte', 'crapu', 'nadal', 'Jathushan', 'haazim32', 'ThanushanP14'];
+
+  const userObj = {
+    content: msg,
+    date: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()} at ${new Date().toLocaleTimeString()}`,
+    submitter: currentUser.name,
+    user: currentUser,
+    sentPrev: false
+  };
+
+  if (messageList.length > 0)
+    userObj.sentPrev = messageList[messageList.length-1].submitter === userObj.submitter;
+
+  console.log(userObj);
+  return userObj;
+}
+
 export default App;
-
-/*
-
-item:
-  name: anything
-  state: ToDo, Done, InProgress
-
-*/

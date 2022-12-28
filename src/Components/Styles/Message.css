@@ -1,0 +1,50 @@
+.message {
+    /* width: 50%; */
+    /* margin: auto; */
+    /* margin-top: 5px; */
+    margin-top: 20px;
+}
+
+
+.message > .userInfo > .header {
+    display: flex;
+    height: 30px;
+    padding-left: 15px;
+}
+
+.header > .profilePic {
+    /* border: 2px solid blue; */
+    background-color: rgb(90, 90, 255);
+    height: 45px;
+    width: 45px;
+    font-size: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.header > .username, .date-time {
+    display: inline;
+    height: 100%;
+    position: relative;
+    
+    margin-right: 10px;
+}
+
+.header > .username {
+    font-size: 17px;
+    /* color: white; */
+    font-weight: 500;
+    top: -22%;
+    left: 0%;
+}
+
+.header > .date-time {
+    font-size: 13px;
+    color: lightgray;
+}
+
+.message > .message-content {
+    text-align: left;
+    padding-left: 75px;
+    color: lightgray;
+}
