@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   height: 99.5vh;
+
 }
 
 .App-logo {
@@ -39,11 +40,14 @@
 }
 
 .chatWindow {
-  height: 85vh;
+  height: 80vh;
   overflow-y: scroll;
   width: 52%;
   margin: auto;
   margin-top: 5px;
+  border: 1px solid rgb(47,49,52);
+  border-radius: 5px;
+  margin-bottom: 15px;
 }
 
 .chatWindow > .intro-title > #title-header{

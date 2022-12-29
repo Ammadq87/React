@@ -9,7 +9,6 @@ export const SwitchUser = (props) => {
                 return (
                     <div className='option'>
                         <FontAwesomeIcon id='icon' style={{color: u.color}} icon={faGamepad}/>
-
                         <button onClick={() => {props.value(u); props.setShowOptions()}}><p style={{color: u.color}}>{u.name}</p></button>
                     </div>
                 );
